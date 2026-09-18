@@ -3,78 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rizal Afandi ✏️ — Portfolio</title>
+  <title>Rizal Afandi — Portfolio</title>
 
-  <!-- Tailwind CSS (PRD: CDN) -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Alpine.js (PRD: interaktivitas ringan) -->
+  <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Font handwriting: Caveat (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 
   <style>
     [x-cloak] { display: none !important; }
 
-    /* === Doodle / Sketch foundations === */
+    /* === Palet warna organik === */
+    :root {
+      --cream: #faf6ed;
+      --paper: #f5ede0;
+      --ink: #2a2419;
+      --charcoal: #3d3529;
+      --burnt: #8b6f47;
+      --clay: #c4a574;
+      --rust: #d4916f;
+      --moss: #7a9b76;
+      --sky: #a8c5d1;
+    }
 
-    /* Kertas hangat bertekstur (PRD: warm cream paper-textured background) */
     body {
-      background-color: #f6efe2;
+      background-color: var(--paper);
       background-image:
-        radial-gradient(circle at 1px 1px, rgba(60, 45, 20, 0.055) 1px, transparent 0);
-      background-size: 22px 22px;
+        repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(42,36,25,0.03) 31px, rgba(42,36,25,0.03) 32px),
+        radial-gradient(circle at 2px 2px, rgba(42,36,25,0.04) 1px, transparent 0);
+      background-size: 100% 32px, 18px 18px;
+      font-family: 'Patrick Hand', 'Caveat', cursive;
+      color: var(--ink);
     }
 
-    /* Border tangan: stroke kasar + sedikit goyangan sudut */
+    /* Font handwriting untuk heading */
+    h1, h2, h3, .hand { font-family: 'Caveat', cursive; font-weight: 700; }
+
+    /* Border coretan tangan (bukan vector rapi) */
     .sketch-border {
-      border: 3px solid #2b2118;
-      border-radius: 14px 18px 12px 20px / 18px 12px 20px 14px;
+      border: 2.5px solid var(--ink);
+      border-radius: 18px 12px 22px 14px / 14px 20px 16px 18px;
+      position: relative;
     }
-    .sketch-shadow  { box-shadow: 5px 5px 0 0 #2b2118; }
-    .sketch-shadow-sm { box-shadow: 3px 3px 0 0 #2b2118; }
+    .sketch-border::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border: 2px solid var(--ink);
+      border-radius: 16px 20px 14px 18px / 20px 12px 18px 16px;
+      opacity: 0.35;
+      pointer-events: none;
+    }
 
-    /* Hover: dorong ke kiri-atas seakan ditekan */
-    .sketch-card { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+    .sketch-shadow { box-shadow: 6px 6px 0 0 rgba(42,36,25,0.15), 7px 7px 0 0 var(--ink); }
+    .sketch-shadow-sm { box-shadow: 4px 4px 0 0 var(--ink); }
+
+    .sketch-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .sketch-card:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 8px 8px 0 0 #2b2118;
+      transform: translate(-3px, -3px) rotate(-0.5deg);
+      box-shadow: 9px 9px 0 0 rgba(42,36,25,0.2), 10px 10px 0 0 var(--ink);
     }
 
-    /* Aksen goyangan untuk badge */
+    /* Badge goyang */
     @keyframes wobble {
-      0%, 100% { transform: rotate(-4deg); }
-      50% { transform: rotate(4deg); }
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
     }
-    .badge-wobble { animation: wobble 3.4s ease-in-out infinite; }
+    .badge-wobble { animation: wobble 3.6s ease-in-out infinite; }
 
-    /* Ikon doodle: stroke tangan, ga ada fill */
-    .doodle {
+    /* Ikon coretan tangan (bukan vector bersih) */
+    .hand-drawn {
       fill: none;
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+      filter: url(#sketch);
     }
 
-    /* Antenna TV */
+    /* TV antenna */
     .antenna {
-      stroke: #2b2118;
+      stroke: var(--ink);
       stroke-width: 4;
       fill: none;
       stroke-linecap: round;
+      filter: url(#sketch);
     }
 
-    /* Layar CRT: sudut melengkung + glow dalam */
+    /* Layar CRT */
     .crt-screen {
-      border-radius: 10px 14px 12px 16px / 14px 10px 16px 12px;
-      background: #14100c;
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.75);
+      border-radius: 12px 16px 14px 18px / 16px 12px 18px 14px;
+      background: #0d0a08;
+      box-shadow: inset 0 0 35px rgba(0,0,0,0.8);
     }
 
-    /* === TV: scaling dinamis ke SEMUA device ===
-       .tv-frame mengikuti lebar container 100%.
-       .tv-viewport (iframe) dirender di "desktop mode" 1280x800 lalu
-       diskalakan persis seukuran container lewat JS (fitTv).
-       Jadi ga ada overflow lagi di mobile maupun zoom-out. */
+    /* TV scaling dinamis */
     .tv-frame {
       position: relative;
       width: 100%;
@@ -89,7 +118,6 @@
       transform-origin: top left;
       border: 0;
     }
-    /* Overlay transparan: iframe ga kebolak klik, klik layar = buka tab baru */
     .tv-clickzone {
       position: absolute;
       inset: 0;
@@ -99,57 +127,73 @@
 
     .knob {
       position: relative;
-      background: radial-gradient(circle at 35% 30%, #f3e7cf, #c9b489 70%, #2b2118 72%);
+      background: radial-gradient(circle at 40% 30%, var(--clay), var(--burnt) 65%, var(--ink) 68%);
+      filter: url(#sketch);
     }
     .knob::after {
       content: "";
       position: absolute;
-      top: 22%; left: 50%;
-      width: 3px; height: 32%;
-      background: #2b2118;
+      top: 24%; left: 50%;
+      width: 3px; height: 30%;
+      background: var(--ink);
       border-radius: 2px;
-      transform: translateX(-50%) rotate(24deg);
+      transform: translateX(-50%) rotate(28deg);
     }
 
     html { scroll-behavior: smooth; }
+
+    /* Hamburger lines goyang */
+    .ham-line {
+      stroke-dasharray: 16;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.3s ease;
+    }
   </style>
 </head>
 
-<body class="text-[#2b2118] min-h-screen antialiased">
+<body class="min-h-screen antialiased">
 
-  <!-- ================= A. HEADER & NAV ================= -->
+  <!-- Filter SVG untuk efek coretan tangan -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <filter id="sketch">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise" seed="2" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ================= HEADER ================= -->
   <header
     x-data="{ open: false }"
-    class="sketch-border sketch-shadow-sm bg-[#fbf7ec] m-3 sm:m-4 p-4 sticky top-3 z-50"
+    class="sketch-border sketch-shadow-sm bg-[var(--cream)] m-3 sm:m-4 p-4 sm:p-5 sticky top-3 z-50"
   >
     <nav class="flex items-center justify-between gap-4">
-      <!-- Branding -->
-      <a href="#top" class="flex items-center gap-2 font-extrabold text-lg sm:text-xl tracking-tight">
+      <!-- Branding (tanpa pensil) -->
+      <a href="#top" class="hand text-2xl sm:text-3xl tracking-tight text-[var(--charcoal)]">
         Rizal Afandi
-        <svg class="w-5 h-5 sm:w-6 sm:h-6 doodle -rotate-12" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 20l1.2-4.2L16.5 4.5l3 3L8.2 18.8z" />
-          <path d="M14.5 6.5l3 3" />
-        </svg>
       </a>
 
       <!-- Desktop nav -->
-      <div class="hidden md:flex items-center gap-7 font-semibold">
-        <a href="#tentang" class="hover:underline decoration-wavy decoration-2 underline-offset-4">Tentang</a>
-        <a href="#proyek" class="hover:underline decoration-wavy decoration-2 underline-offset-4">Proyek</a>
-        <a href="#keahlian" class="hover:underline decoration-wavy decoration-2 underline-offset-4">Keahlian</a>
+      <div class="hidden md:flex items-center gap-8 text-lg font-semibold">
+        <a href="#tentang" class="hover:text-[var(--rust)] transition-colors">Tentang</a>
+        <a href="#proyek" class="hover:text-[var(--rust)] transition-colors">Proyek</a>
+        <a href="#keahlian" class="hover:text-[var(--rust)] transition-colors">Keahlian</a>
       </div>
 
       <!-- Hamburger (mobile) -->
       <button
         @click="open = !open"
-        class="md:hidden sketch-border sketch-shadow-sm bg-white px-3 py-2"
+        class="md:hidden sketch-border sketch-shadow-sm bg-white p-2.5"
         aria-label="Buka menu"
         :aria-expanded="open.toString()"
       >
-        <svg x-show="!open" class="w-6 h-6 doodle" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16" />
+        <svg x-show="!open" class="w-7 h-7 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
+          <path class="ham-line" d="M4 7h16" />
+          <path class="ham-line" d="M4 12h16" />
+          <path class="ham-line" d="M4 17h16" />
         </svg>
-        <svg x-show="open" x-cloak class="w-6 h-6 doodle" viewBox="0 0 24 24" aria-hidden="true">
+        <svg x-show="open" x-cloak class="w-7 h-7 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 6l12 12M18 6L6 18" />
         </svg>
       </button>
@@ -162,33 +206,29 @@
       x-transition:enter="transition ease-out duration-150"
       x-transition:enter-start="opacity-0 -translate-y-2"
       x-transition:enter-end="opacity-100 translate-y-0"
-      class="md:hidden mt-4 border-t-2 border-dashed border-[#2b2118] pt-4 flex flex-col gap-3 font-semibold"
+      class="md:hidden mt-4 border-t-2 border-dashed border-[var(--ink)] pt-4 flex flex-col gap-3 text-lg font-semibold"
     >
-      <a href="#tentang" @click="open = false" class="hover:underline">Tentang</a>
-      <a href="#proyek" @click="open = false" class="hover:underline">Proyek</a>
-      <a href="#keahlian" @click="open = false" class="hover:underline">Keahlian</a>
+      <a href="#tentang" @click="open = false" class="hover:text-[var(--rust)]">Tentang</a>
+      <a href="#proyek" @click="open = false" class="hover:text-[var(--rust)]">Proyek</a>
+      <a href="#keahlian" @click="open = false" class="hover:text-[var(--rust)]">Keahlian</a>
     </div>
   </header>
 
   <main id="top" class="px-3 sm:px-4 max-w-4xl mx-auto">
 
-    <!-- ================= B. SECTION 1: ABOUT ================= -->
+    <!-- ================= TENTANG ================= -->
     <section id="tentang" class="scroll-mt-32 mt-10 sm:mt-14">
-      <div class="relative bg-white sketch-border sketch-shadow p-6 sm:p-10">
+      <div class="relative bg-[var(--cream)] sketch-border sketch-shadow p-6 sm:p-10">
         <!-- Badge pojok -->
-        <span class="badge-wobble absolute -top-5 -right-3 sm:-right-5 rotate-[-6deg] bg-[#ffd23f] sketch-border sketch-shadow-sm px-3 py-1.5 font-extrabold text-sm sm:text-base whitespace-nowrap flex items-center gap-1.5">
-          Hello World!
-          <svg class="w-4 h-4 doodle" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
-            <path d="M18.5 15.5l.8 1.9 1.9.8-1.9.8-.8 1.9-.8-1.9-1.9-.8 1.9-.8z" />
-          </svg>
+        <span class="badge-wobble absolute -top-6 -right-3 sm:-right-6 rotate-[-7deg] bg-[var(--rust)] sketch-border sketch-shadow-sm px-4 py-2 hand text-xl sm:text-2xl whitespace-nowrap text-white">
+          Hello World! ✨
         </span>
 
-        <h2 class="text-2xl sm:text-3xl font-extrabold mb-5">Tentang Saya</h2>
+        <h2 class="text-4xl sm:text-5xl mb-6 text-[var(--charcoal)]">Tentang Saya</h2>
 
-        <div class="space-y-4 text-[15px] sm:text-lg leading-relaxed text-[#3a2e21]">
+        <div class="space-y-5 text-lg sm:text-xl leading-relaxed text-[var(--charcoal)]">
           <p>
-            Halo, perkenalkan namaku Rizal Afandi, lahir di Sukabumi, 2005.
+            Halo, perkenalkan namaku <strong>Rizal Afandi</strong>, lahir di Sukabumi, 2005.
           </p>
           <p>
             Keseharianku saat ini adalah bekerja sebagai pembuat arang bersama ayahku.
@@ -212,13 +252,13 @@
       </div>
     </section>
 
-    <!-- ================= C. SECTION 2: PROJECT TV ================= -->
+    <!-- ================= PROYEK TV ================= -->
     <section id="proyek" class="scroll-mt-32 mt-16 sm:mt-24">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-center mb-3">
+      <h2 class="text-4xl sm:text-5xl text-center mb-4 text-[var(--charcoal)]">
         Visit my project you can use for free
       </h2>
-      <p class="text-center text-[#6b5b45] mb-10 text-sm sm:text-base flex items-center justify-center gap-2">
-        <svg class="w-5 h-5 doodle" viewBox="0 0 24 24" aria-hidden="true">
+      <p class="text-center text-[var(--burnt)] mb-10 text-lg sm:text-xl flex items-center justify-center gap-2">
+        <svg class="w-6 h-6 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
           <rect x="3" y="5" width="18" height="12" rx="2" />
           <path d="M8 21h8M12 17v4" />
         </svg>
@@ -233,23 +273,23 @@
           class="block group w-full max-w-2xl"
           aria-label="Buka Lazir Tools di tab baru"
         >
-          <div class="bg-[#e8dcc0] sketch-border sketch-shadow p-4 sm:p-7 sketch-card">
+          <div class="bg-[var(--clay)] sketch-border sketch-shadow p-5 sm:p-8 sketch-card">
 
             <!-- Antenna -->
-            <div class="flex justify-center mb-1">
-              <svg width="150" height="44" viewBox="0 0 150 44" aria-hidden="true">
-                <line class="antenna" x1="75" y1="40" x2="42" y2="4" />
-                <line class="antenna" x1="75" y1="40" x2="108" y2="4" />
-                <circle cx="42" cy="4" r="4" fill="#2b2118" />
-                <circle cx="108" cy="4" r="4" fill="#2b2118" />
+            <div class="flex justify-center mb-2">
+              <svg width="160" height="50" viewBox="0 0 160 50" aria-hidden="true">
+                <line class="antenna" x1="80" y1="45" x2="45" y2="6" />
+                <line class="antenna" x1="80" y1="45" x2="115" y2="6" />
+                <circle cx="45" cy="6" r="5" fill="var(--ink)" />
+                <circle cx="115" cy="6" r="5" fill="var(--ink)" />
               </svg>
             </div>
 
             <!-- Chassis -->
-            <div class="relative bg-[#4a3b2a] sketch-border p-3 sm:p-5">
-              <div class="flex flex-col gap-3 sm:gap-4">
+            <div class="relative bg-[var(--charcoal)] sketch-border p-4 sm:p-6">
+              <div class="flex flex-col gap-4">
 
-                <!-- Screen (lebar adaptif, iframe diskalakan oleh JS) -->
+                <!-- Screen -->
                 <div class="crt-screen flex-1 min-w-0">
                   <div class="tv-frame">
                     <iframe
@@ -261,44 +301,43 @@
                       sandbox="allow-scripts allow-same-origin"
                       tabindex="-1"
                     ></iframe>
-                    <!-- Klik layar = buka tab baru (iframe ga kebolak klik) -->
                     <span class="tv-clickzone" title="Buka Lazir Tools di tab baru"></span>
                   </div>
                 </div>
 
                 <!-- Knobs & power -->
-                <div class="flex items-center justify-center gap-3 sm:gap-4">
-                  <div class="knob w-9 h-9 sm:w-11 sm:h-11 sketch-border-sm" title="Knob 1"></div>
-                  <div class="knob w-9 h-9 sm:w-11 sm:h-11 sketch-border-sm" title="Knob 2"></div>
+                <div class="flex items-center justify-center gap-4">
+                  <div class="knob w-10 h-10 sm:w-12 sm:h-12 sketch-border" title="Knob 1"></div>
+                  <div class="knob w-10 h-10 sm:w-12 sm:h-12 sketch-border" title="Knob 2"></div>
                   <div
-                    class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#d94f3d] sketch-border-sm flex items-center justify-center text-white"
+                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[var(--rust)] sketch-border flex items-center justify-center text-white"
                     title="Power"
                   >
-                    <svg class="w-5 h-5 doodle" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-6 h-6 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M12 4v8" />
-                      <path d="M7.8 7.4a7 7 0 108.4 0" />
+                      <path d="M7.5 7.5a7 7 0 109 0" />
                     </svg>
                   </div>
                 </div>
               </div>
 
               <!-- Speaker grille -->
-              <div class="mt-3 flex gap-1.5 justify-center">
-                <span class="w-3 h-3 rounded-full bg-[#2b2118]"></span>
-                <span class="w-3 h-3 rounded-full bg-[#2b2118]"></span>
-                <span class="w-3 h-3 rounded-full bg-[#2b2118]"></span>
-                <span class="w-3 h-3 rounded-full bg-[#2b2118]"></span>
-                <span class="w-3 h-3 rounded-full bg-[#2b2118]"></span>
+              <div class="mt-4 flex gap-2 justify-center">
+                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
+                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
+                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
+                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
+                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
               </div>
             </div>
 
             <!-- Legs -->
-            <div class="flex justify-between px-6 sm:px-10 -mt-1">
-              <div class="w-7 h-6 sm:w-8 sm:h-7 bg-[#3a2e21] rounded-b-lg"></div>
-              <div class="w-7 h-6 sm:w-8 sm:h-7 bg-[#3a2e21] rounded-b-lg"></div>
+            <div class="flex justify-between px-8 sm:px-12 -mt-1">
+              <div class="w-8 h-7 sm:w-9 sm:h-8 bg-[var(--ink)] rounded-b-lg opacity-80"></div>
+              <div class="w-8 h-7 sm:w-9 sm:h-8 bg-[var(--ink)] rounded-b-lg opacity-80"></div>
             </div>
 
-            <p class="text-center mt-4 font-bold text-sm sm:text-base group-hover:underline">
+            <p class="text-center mt-5 hand text-xl sm:text-2xl group-hover:underline text-[var(--charcoal)]">
               Lazir Tools → micro-tools gratis untuk siapa saja
             </p>
           </div>
@@ -306,47 +345,47 @@
       </div>
     </section>
 
-    <!-- ================= D. SECTION 3: SKILLS ================= -->
+    <!-- ================= KEAHLIAN ================= -->
     <section id="keahlian" class="scroll-mt-32 mt-16 sm:mt-24">
-      <h2 class="text-2xl sm:text-3xl font-extrabold mb-8">Keahlian</h2>
+      <h2 class="text-4xl sm:text-5xl mb-10 text-[var(--charcoal)]">Keahlian</h2>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-7">
         <!-- Card 1 -->
-        <div class="bg-white sketch-border sketch-shadow sketch-card p-6">
-          <svg class="w-9 h-9 mb-3 doodle" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 5h16v10H9l-4 4z" />
-            <path d="M8 9.5h8M8 12.5h5" />
+        <div class="bg-[var(--cream)] sketch-border sketch-shadow sketch-card p-6 sm:p-7">
+          <svg class="w-11 h-11 mb-4 hand-drawn text-[var(--moss)]" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5h15v10H9.5l-4 4z" />
+            <path d="M8 9h8M8 12h5" />
           </svg>
-          <h3 class="font-extrabold text-lg mb-2">Bahasa Inggris</h3>
-          <p class="text-[15px] leading-relaxed text-[#4a3b2a]">
+          <h3 class="hand text-2xl sm:text-3xl mb-3 text-[var(--charcoal)]">Bahasa Inggris</h3>
+          <p class="text-lg leading-relaxed text-[var(--burnt)] mb-4">
             Cukup aktif untuk membaca, menulis, dan berbicara (sekitar 75%).
           </p>
-          <div class="mt-4 h-3 sketch-border-sm bg-[#eee3cc] overflow-hidden">
-            <div class="h-full bg-[#ffd23f]" style="width: 75%"></div>
+          <div class="h-4 sketch-border bg-[var(--paper)] overflow-hidden">
+            <div class="h-full bg-[var(--moss)]" style="width: 75%"></div>
           </div>
         </div>
 
         <!-- Card 2 -->
-        <div class="bg-white sketch-border sketch-shadow sketch-card p-6">
-          <svg class="w-9 h-9 mb-3 doodle" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="5" width="16" height="11" rx="1.5" />
+        <div class="bg-[var(--cream)] sketch-border sketch-shadow sketch-card p-6 sm:p-7">
+          <svg class="w-11 h-11 mb-4 hand-drawn text-[var(--sky)]" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="11" rx="2" />
             <path d="M2 19h20M9.5 16h5" />
           </svg>
-          <h3 class="font-extrabold text-lg mb-2">Teknologi &amp; Perangkat</h3>
-          <p class="text-[15px] leading-relaxed text-[#4a3b2a]">
+          <h3 class="hand text-2xl sm:text-3xl mb-3 text-[var(--charcoal)]">Teknologi &amp; Perangkat</h3>
+          <p class="text-lg leading-relaxed text-[var(--burnt)]">
             Terbiasa mengoperasikan komputer, laptop, serta <em>software</em> perkantoran
             (Microsoft Excel, Word, PowerPoint, Outlook).
           </p>
         </div>
 
         <!-- Card 3 -->
-        <div class="bg-white sketch-border sketch-shadow sketch-card p-6">
-          <svg class="w-9 h-9 mb-3 doodle" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
-            <path d="M18 15l.8 1.9 1.9.8-1.9.8-.8 1.9-.8-1.9-1.9-.8 1.9-.8z" />
+        <div class="bg-[var(--cream)] sketch-border sketch-shadow sketch-card p-6 sm:p-7">
+          <svg class="w-11 h-11 mb-4 hand-drawn text-[var(--rust)]" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l2 5 5 1-4 3 1 5-4-3-4 3 1-5-4-3 5-1z" />
+            <circle cx="19" cy="17" r="2.5" />
           </svg>
-          <h3 class="font-extrabold text-lg mb-2">Internet &amp; AI</h3>
-          <p class="text-[15px] leading-relaxed text-[#4a3b2a]">
+          <h3 class="hand text-2xl sm:text-3xl mb-3 text-[var(--charcoal)]">Internet &amp; AI</h3>
+          <p class="text-lg leading-relaxed text-[var(--burnt)]">
             Cukup memahami penggunaan internet dan teknologi AI modern untuk mendukung
             produktivitas kerja.
           </p>
@@ -354,27 +393,25 @@
       </div>
     </section>
 
-    <!-- ================= E. FOOTER ================= -->
+    <!-- ================= FOOTER ================= -->
     <footer class="mt-20 sm:mt-28 mb-10">
-      <div class="bg-[#2b2118] text-[#f6efe2] sketch-border sketch-shadow p-8 text-center">
-        <svg class="w-7 h-7 mx-auto mb-3 doodle" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 8h13v5a5 5 0 01-5 5H9a5 5 0 01-5-5z" />
-          <path d="M17 9h2a2.5 2.5 0 010 5h-2" />
-          <path d="M5 21h12" />
+      <div class="bg-[var(--ink)] text-[var(--cream)] sketch-border sketch-shadow p-8 sm:p-10 text-center">
+        <svg class="w-9 h-9 mx-auto mb-4 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 9h12v4a4 4 0 01-4 4h-4a4 4 0 01-4-4z" />
+          <path d="M17 10h2a2 2 0 010 4h-2" />
+          <path d="M6 21h10" />
         </svg>
-        <p class="text-base sm:text-lg font-medium leading-relaxed">
-          “Dibuat dengan kejujuran, semangat kerja keras, dan sedikit bantuan AI ☕”
+        <p class="hand text-2xl sm:text-3xl leading-relaxed mb-2">
+          Dibuat dengan kejujuran, semangat kerja keras,<br>dan sedikit bantuan AI ☕
         </p>
-        <p class="mt-3 text-sm text-[#c9b489]">— Rizal Afandi (2005)</p>
+        <p class="mt-4 text-lg text-[var(--clay)]">— Rizal Afandi (2005)</p>
       </div>
     </footer>
 
   </main>
 
   <script>
-    // Skala iframe TV ke lebar container apapun (mobile, tablet, desktop, zoom).
-    // Iframe dirender fixed 1280x800 (desktop mode, PRD 4.3) lalu diskalakan
-    // persis seukuran container, jadi ga pernah overflow / ga pernah aneh.
+    // TV scaling dinamis
     (function fitTv() {
       var frames = document.querySelectorAll(".tv-frame");
       function apply() {
