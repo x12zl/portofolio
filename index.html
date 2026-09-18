@@ -11,426 +11,522 @@
   <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-  <!-- Font handwriting: Caveat (Google Fonts) -->
+  <!-- Fonts: Inter (body) + Playfair Display (heading) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
   <style>
     [x-cloak] { display: none !important; }
 
-    /* === Palet warna organik === */
+    /* Color palette */
     :root {
-      --cream: #faf6ed;
-      --paper: #f5ede0;
-      --ink: #2a2419;
-      --charcoal: #3d3529;
-      --burnt: #8b6f47;
-      --clay: #c4a574;
-      --rust: #d4916f;
-      --moss: #7a9b76;
-      --sky: #a8c5d1;
+      --navy: #1e293b;
+      --navy-dark: #0f172a;
+      --charcoal: #334155;
+      --blue: #3b82f6;
+      --blue-light: #60a5fa;
+      --orange: #f97316;
+      --orange-light: #fb923c;
+      --cream: #f8fafc;
+      --white: #ffffff;
+      --gray: #e2e8f0;
+      --gray-light: #f1f5f9;
     }
 
     body {
-      background-color: var(--paper);
-      background-image:
-        repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(42,36,25,0.03) 31px, rgba(42,36,25,0.03) 32px),
-        radial-gradient(circle at 2px 2px, rgba(42,36,25,0.04) 1px, transparent 0);
-      background-size: 100% 32px, 18px 18px;
-      font-family: 'Patrick Hand', 'Caveat', cursive;
-      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      color: var(--charcoal);
+      background: linear-gradient(180deg, var(--cream) 0%, #f1f5f9 100%);
     }
 
-    /* Font handwriting untuk heading */
-    h1, h2, h3, .hand { font-family: 'Caveat', cursive; font-weight: 700; }
+    h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
 
-    /* Border coretan tangan (bukan vector rapi) */
-    .sketch-border {
-      border: 2.5px solid var(--ink);
-      border-radius: 18px 12px 22px 14px / 14px 20px 16px 18px;
-      position: relative;
+    .section-padding { padding-top: 4rem; padding-bottom: 4rem; }
+    .container-custom { max-width: 800px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+
+    /* Card shadow professional */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .sketch-border::before {
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.375rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-navy { background: var(--navy); color: var(--white); }
+    .badge-blue { background: var(--blue); color: var(--white); }
+    .badge-orange { background: var(--orange); color: var(--white); }
+
+    /* Timeline */
+    .timeline-item { position: relative; padding-left: 1.5rem; border-left: 2px solid var(--gray); }
+    .timeline-item::before {
       content: '';
       position: absolute;
-      inset: -3px;
-      border: 2px solid var(--ink);
-      border-radius: 16px 20px 14px 18px / 20px 12px 18px 16px;
-      opacity: 0.35;
-      pointer-events: none;
+      left: -6px;
+      top: 0.25rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 2px solid var(--blue);
     }
 
-    .sketch-shadow { box-shadow: 6px 6px 0 0 rgba(42,36,25,0.15), 7px 7px 0 0 var(--ink); }
-    .sketch-shadow-sm { box-shadow: 4px 4px 0 0 var(--ink); }
-
-    .sketch-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .sketch-card:hover {
-      transform: translate(-3px, -3px) rotate(-0.5deg);
-      box-shadow: 9px 9px 0 0 rgba(42,36,25,0.2), 10px 10px 0 0 var(--ink);
+    /* Navigation sticky */
+    header {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--gray);
     }
 
-    /* Badge goyang */
-    @keyframes wobble {
-      0%, 100% { transform: rotate(-5deg); }
-      50% { transform: rotate(5deg); }
+    /* Fade in animation */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .badge-wobble { animation: wobble 3.6s ease-in-out infinite; }
+    .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
 
-    /* Ikon coretan tangan (bukan vector bersih) */
-    .hand-drawn {
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      filter: url(#sketch);
-    }
+    /* Skills bar */
+    .skill-bar { height: 8px; background: var(--gray-light); border-radius: 4px; overflow: hidden; }
+    .skill-fill { height: 100%; background: var(--blue); transition: width 1s ease; }
+    .skill-fill.orange { background: var(--orange); }
 
-    /* TV antenna */
-    .antenna {
-      stroke: var(--ink);
-      stroke-width: 4;
-      fill: none;
-      stroke-linecap: round;
-      filter: url(#sketch);
+    /* Mobile nav */
+    .nav-links {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 70vw; max-width: 320px;
+      background: var(--white);
+      box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 50;
+      padding: 2rem;
     }
-
-    /* Layar CRT */
-    .crt-screen {
-      border-radius: 12px 16px 14px 18px / 16px 12px 18px 14px;
-      background: #0d0a08;
-      box-shadow: inset 0 0 35px rgba(0,0,0,0.8);
-    }
-
-    /* TV scaling dinamis */
-    .tv-frame {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-    }
-    .tv-viewport {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 1280px;
-      height: 800px;
-      transform-origin: top left;
-      border: 0;
-    }
-    .tv-clickzone {
-      position: absolute;
-      inset: 0;
-      z-index: 10;
-      cursor: pointer;
-    }
-
-    .knob {
-      position: relative;
-      background: radial-gradient(circle at 40% 30%, var(--clay), var(--burnt) 65%, var(--ink) 68%);
-      filter: url(#sketch);
-    }
-    .knob::after {
-      content: "";
-      position: absolute;
-      top: 24%; left: 50%;
-      width: 3px; height: 30%;
-      background: var(--ink);
-      border-radius: 2px;
-      transform: translateX(-50%) rotate(28deg);
-    }
+    .nav-links.open { transform: translateX(0); }
 
     html { scroll-behavior: smooth; }
-
-    /* Hamburger lines goyang */
-    .ham-line {
-      stroke-dasharray: 16;
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 0.3s ease;
-    }
   </style>
 </head>
 
-<body class="min-h-screen antialiased">
+<body class="antialiased">
 
-  <!-- Filter SVG untuk efek coretan tangan -->
-  <svg width="0" height="0" style="position:absolute">
-    <defs>
-      <filter id="sketch">
-        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise" seed="2" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </defs>
-  </svg>
-
-  <!-- ================= HEADER ================= -->
-  <header
-    x-data="{ open: false }"
-    class="sketch-border sketch-shadow-sm bg-[var(--cream)] m-3 sm:m-4 p-4 sm:p-5 sticky top-3 z-50"
-  >
-    <nav class="flex items-center justify-between gap-4">
-      <!-- Branding (tanpa pensil) -->
-      <a href="#top" class="hand text-2xl sm:text-3xl tracking-tight text-[var(--charcoal)]">
-        Rizal Afandi
-      </a>
+  <!-- ================= NAVIGATION ================= -->
+  <header class="fixed top-0 left-0 right-0 z-40">
+    <nav class="container-custom py-4 flex items-center justify-between">
+      <a href="#top" class="font-bold text-xl text-navy hover:text-blue transition-colors">Rizal Afandi</a>
 
       <!-- Desktop nav -->
-      <div class="hidden md:flex items-center gap-8 text-lg font-semibold">
-        <a href="#tentang" class="hover:text-[var(--rust)] transition-colors">Tentang</a>
-        <a href="#proyek" class="hover:text-[var(--rust)] transition-colors">Proyek</a>
-        <a href="#keahlian" class="hover:text-[var(--rust)] transition-colors">Keahlian</a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#tentang" class="text-sm font-medium hover:text-blue transition-colors">Tentang</a>
+        <a href="#pendidikan" class="text-sm font-medium hover:text-blue transition-colors">Pendidikan</a>
+        <a href="#pengalaman" class="text-sm font-medium hover:text-blue transition-colors">Pengalaman</a>
+        <a href="#keahlian" class="text-sm font-medium hover:text-blue transition-colors">Keahlian</a>
+        <a href="#kontak" class="text-sm font-medium hover:text-blue transition-colors">Kontak</a>
       </div>
 
-      <!-- Hamburger (mobile) -->
-      <button
-        @click="open = !open"
-        class="md:hidden sketch-border sketch-shadow-sm bg-white p-2.5"
-        aria-label="Buka menu"
-        :aria-expanded="open.toString()"
-      >
-        <svg x-show="!open" class="w-7 h-7 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
-          <path class="ham-line" d="M4 7h16" />
-          <path class="ham-line" d="M4 12h16" />
-          <path class="ham-line" d="M4 17h16" />
-        </svg>
-        <svg x-show="open" x-cloak class="w-7 h-7 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 6l12 12M18 6L6 18" />
+      <!-- Mobile toggle -->
+      <button @click="open = true" class="md:hidden p-2" aria-label="Menu">
+        <svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
     </nav>
 
-    <!-- Dropdown mobile -->
-    <div
-      x-show="open"
-      x-cloak
-      x-transition:enter="transition ease-out duration-150"
-      x-transition:enter-start="opacity-0 -translate-y-2"
-      x-transition:enter-end="opacity-100 translate-y-0"
-      class="md:hidden mt-4 border-t-2 border-dashed border-[var(--ink)] pt-4 flex flex-col gap-3 text-lg font-semibold"
-    >
-      <a href="#tentang" @click="open = false" class="hover:text-[var(--rust)]">Tentang</a>
-      <a href="#proyek" @click="open = false" class="hover:text-[var(--rust)]">Proyek</a>
-      <a href="#keahlian" @click="open = false" class="hover:text-[var(--rust)]">Keahlian</a>
+    <!-- Mobile menu -->
+    <div :class="open ? 'open' : ''" class="nav-links">
+      <div class="flex justify-end mb-6">
+        <button @click="open = false" class="p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex flex-col gap-4 text-lg font-medium">
+        <a href="#tentang" @click="open = false" class="hover:text-blue">Tentang</a>
+        <a href="#pendidikan" @click="open = false" class="hover:text-blue">Pendidikan</a>
+        <a href="#pengalaman" @click="open = false" class="hover:text-blue">Pengalaman</a>
+        <a href="#keahlian" @click="open = false" class="hover:text-blue">Keahlian</a>
+        <a href="#kontak" @click="open = false" class="hover:text-blue">Kontak</a>
+      </div>
     </div>
   </header>
 
-  <main id="top" class="px-3 sm:px-4 max-w-4xl mx-auto">
+  <!-- ================= HERO ================= -->
+  <section id="top" class="pt-32 pb-20 px-4">
+    <div class="container-custom">
+      <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 fade-in-up">
+        <!-- Photo placeholder (ganti dengan foto kamu nanti) -->
+        <div class="w-40 h-40 md:w-48 md:h-48 flex-shrink-0">
+          <img
+            src="https://ui-avatars.com/api/?name=Rizal+Afandi&background=1e293b&color=fff&size=256"
+            alt="Foto Rizal Afandi"
+            class="w-full h-full object-cover rounded-2xl shadow-lg"
+          />
+        </div>
 
-    <!-- ================= TENTANG ================= -->
-    <section id="tentang" class="scroll-mt-32 mt-10 sm:mt-14">
-      <div class="relative bg-[var(--cream)] sketch-border sketch-shadow p-6 sm:p-10">
-        <!-- Badge pojok -->
-        <span class="badge-wobble absolute -top-6 -right-3 sm:-right-6 rotate-[-7deg] bg-[var(--rust)] sketch-border sketch-shadow-sm px-4 py-2 hand text-xl sm:text-2xl whitespace-nowrap text-white">
-          Hello World! ✨
-        </span>
+        <!-- Text -->
+        <div class="text-center md:text-left flex-1">
+          <h1 class="text-4xl md:text-5xl font-bold text-navy mb-4 serif">Rizal Afandi</h1>
+          <p class="text-xl text-charcoal mb-6">Pembuat Arang & Lulusan SMK Agribisnis</p>
+          
+          <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+            <span class="badge badge-blue">SMK 2023</span>
+            <span class="badge badge-orange">Lulusan</span>
+            <span class="badge badge-navy">Lintas Bidang</span>
+          </div>
 
-        <h2 class="text-4xl sm:text-5xl mb-6 text-[var(--charcoal)]">Tentang Saya</h2>
-
-        <div class="space-y-5 text-lg sm:text-xl leading-relaxed text-[var(--charcoal)]">
-          <p>
-            Halo, perkenalkan namaku <strong>Rizal Afandi</strong>, lahir di Sukabumi, 2005.
-          </p>
-          <p>
-            Keseharianku saat ini adalah bekerja sebagai pembuat arang bersama ayahku.
-            Bidang ini memang tidak memiliki jenjang karier formal, dan sebagian orang
-            mungkin melihatku jalan di tempat. Jujur, terkadang aku juga merasa begitu,
-            tetapi aku terus berusaha melangkah ke depan dengan kemampuan yang aku miliki.
-          </p>
-          <p>
-            Aku tidak tinggal diam; aku sudah mencoba berbagai cara seperti melamar kerja
-            ke berbagai tempat demi memperbaiki pengalaman dan isi CV-ku. Sebelum ini, aku
-            juga pernah bekerja sebagai <em>cook helper</em> dan <em>waiters</em> di
-            beberapa perusahaan, yang memberiku banyak pengalaman berharga dalam dunia kerja.
-          </p>
-          <p>
-            Melalui pembuatan <em>website</em> ini (yang pembuatannya juga dibantu oleh AI,
-            <em>hehe</em>), aku berharap bisa memperluas peluang dan menemukan kesempatan
-            untuk bergabung di perusahaan yang mau menerimaku serta memberikan ruang untuk
-            berkembang.
-          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <a href="#kontak" class="px-6 py-3 bg-navy text-white rounded-lg font-semibold hover:bg-navy-dark transition-colors">
+              Hubungi Saya
+            </a>
+            <a href="#pengalaman" class="px-6 py-3 bg-white border-2 border-navy text-navy rounded-lg font-semibold hover:bg-navy hover:text-white transition-colors">
+              Lihat Pengalaman
+            </a>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ================= PROYEK TV ================= -->
-    <section id="proyek" class="scroll-mt-32 mt-16 sm:mt-24">
-      <h2 class="text-4xl sm:text-5xl text-center mb-4 text-[var(--charcoal)]">
-        Visit my project you can use for free
-      </h2>
-      <p class="text-center text-[var(--burnt)] mb-10 text-lg sm:text-xl flex items-center justify-center gap-2">
-        <svg class="w-6 h-6 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3" y="5" width="18" height="12" rx="2" />
-          <path d="M8 21h8M12 17v4" />
-        </svg>
-        Klik TV-nya untuk membuka projectnya di tab baru
-      </p>
+  <!-- ================= TENTANG ================= -->
+  <section id="tentang" class="section-padding bg-white">
+    <div class="container-custom">
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mb-6 serif">Tentang Saya</h2>
+      <div class="card p-6 md:p-8 fade-in-up">
+        <p class="text-lg leading-relaxed text-charcoal mb-4">
+          Halo, perkenalkan nama saya <strong>Rizal Afandi</strong>, lahir di Sukabumi, 2005. 
+          Saya adalah lulusan <strong>SMK Negeri 1 Cibadak</strong> dengan jurusan 
+          <strong>Agribisnis Perikanan Air Tawar</strong> (2023).
+        </p>
+        <p class="text-lg leading-relaxed text-charcoal mb-4">
+          Saat ini saya bekerja sebagai <strong>Pembuat Arang</strong> bersama keluarga di skala UMKM. 
+          Sebelumnya, saya pernah mengabdi sebagai <strong>Koki Asisten</strong> di Eka Jaya Chinese Food 
+          (September 2024 – Januari 2025).
+        </p>
+        <p class="text-lg leading-relaxed text-charcoal mb-4">
+          Saya memiliki sertifikasi <strong>Microsoft Office</strong> dari Skill Academy (26 Juni 2024) 
+          dan kemampuan bahasa Inggris yang cukup aktif (75%). Saya juga terbiasa dengan editing 
+          video dan foto menggunakan <strong>CapCut</strong> serta <strong>Alight Motion</strong>.
+        </p>
+        <p class="text-lg leading-relaxed text-charcoal">
+          Saya adalah <strong>fast learner</strong> dan sangat terbuka untuk berbagai peluang kerja — 
+          IT Support, Admin Office, Customer Service, atau bidang lain yang sesuai dengan 
+          pengalaman dan keahlian saya. Saya siap belajar dan beradaptasi dengan cepat.
+        </p>
+      </div>
+    </div>
+  </section>
 
-      <div class="flex justify-center">
-        <a
-          href="https://lazir-tools.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="block group w-full max-w-2xl"
-          aria-label="Buka Lazir Tools di tab baru"
-        >
-          <div class="bg-[var(--clay)] sketch-border sketch-shadow p-5 sm:p-8 sketch-card">
+  <!-- ================= PENDIDIKAN ================= -->
+  <section id="pendidikan" class="section-padding bg-[#f8fafc]">
+    <div class="container-custom">
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mb-8 serif">Riwayat Pendidikan</h2>
+      
+      <!-- SMK -->
+      <div class="card p-6 md:p-8 mb-6 fade-in-up stagger-1">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-navy">SMK Negeri 1 Cibadak</h3>
+            <p class="text-blue font-medium mb-2">Agribisnis Perikanan Air Tawar</p>
+            <p class="text-gray-600">Lulus: 2023</p>
+          </div>
+          <span class="badge badge-navy self-start md:self-auto">2020 - 2023</span>
+        </div>
+      </div>
 
-            <!-- Antenna -->
-            <div class="flex justify-center mb-2">
-              <svg width="160" height="50" viewBox="0 0 160 50" aria-hidden="true">
-                <line class="antenna" x1="80" y1="45" x2="45" y2="6" />
-                <line class="antenna" x1="80" y1="45" x2="115" y2="6" />
-                <circle cx="45" cy="6" r="5" fill="var(--ink)" />
-                <circle cx="115" cy="6" r="5" fill="var(--ink)" />
-              </svg>
-            </div>
-
-            <!-- Chassis -->
-            <div class="relative bg-[var(--charcoal)] sketch-border p-4 sm:p-6">
-              <div class="flex flex-col gap-4">
-
-                <!-- Screen -->
-                <div class="crt-screen flex-1 min-w-0">
-                  <div class="tv-frame">
-                    <iframe
-                      src="https://lazir-tools.vercel.app/"
-                      title="Preview Lazir Tools"
-                      class="tv-viewport"
-                      loading="lazy"
-                      referrerpolicy="no-referrer"
-                      sandbox="allow-scripts allow-same-origin"
-                      tabindex="-1"
-                    ></iframe>
-                    <span class="tv-clickzone" title="Buka Lazir Tools di tab baru"></span>
-                  </div>
-                </div>
-
-                <!-- Knobs & power -->
-                <div class="flex items-center justify-center gap-4">
-                  <div class="knob w-10 h-10 sm:w-12 sm:h-12 sketch-border" title="Knob 1"></div>
-                  <div class="knob w-10 h-10 sm:w-12 sm:h-12 sketch-border" title="Knob 2"></div>
-                  <div
-                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[var(--rust)] sketch-border flex items-center justify-center text-white"
-                    title="Power"
-                  >
-                    <svg class="w-6 h-6 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 4v8" />
-                      <path d="M7.5 7.5a7 7 0 109 0" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Speaker grille -->
-              <div class="mt-4 flex gap-2 justify-center">
-                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
-                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
-                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
-                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
-                <span class="w-3 h-3 rounded-full bg-[var(--ink)] opacity-60"></span>
-              </div>
-            </div>
-
-            <!-- Legs -->
-            <div class="flex justify-between px-8 sm:px-12 -mt-1">
-              <div class="w-8 h-7 sm:w-9 sm:h-8 bg-[var(--ink)] rounded-b-lg opacity-80"></div>
-              <div class="w-8 h-7 sm:w-9 sm:h-8 bg-[var(--ink)] rounded-b-lg opacity-80"></div>
-            </div>
-
-            <p class="text-center mt-5 hand text-xl sm:text-2xl group-hover:underline text-[var(--charcoal)]">
-              Lazir Tools → micro-tools gratis untuk siapa saja
+      <!-- Microsoft Office -->
+      <div class="card p-6 md:p-8 fade-in-up stagger-2">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-navy">Microsoft Office Certification</h3>
+            <p class="text-blue font-medium mb-2">Skill Academy</p>
+            <p class="text-gray-600">
+              Microsoft Excel, Word, PowerPoint<br>
+              <span class="inline-block mt-1 text-sm text-gray-500">Tanggal: 26 Juni 2024</span>
             </p>
           </div>
+          <span class="badge badge-blue self-start md:self-auto">Sertifikasi</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PENGALAMAN ================= -->
+  <section id="pengalaman" class="section-padding bg-white">
+    <div class="container-custom">
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mb-8 serif">Pengalaman Kerja</h2>
+
+      <!-- Arang -->
+      <div class="timeline-item mb-10 fade-in-up stagger-1">
+        <div class="card p-6 md:p-8">
+          <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 class="text-xl font-bold text-navy">Pembuat Arang</h3>
+              <p class="text-gray-600">UMKM Keluarga — Sukabumi</p>
+            </div>
+            <span class="badge badge-orange self-start md:self-auto">Jun 2025 - Sekarang</span>
+          </div>
+          <ul class="list-disc list-inside text-gray-700 space-y-2">
+            <li>Prosesing bahan baku (kulit kayu, limbah pertanian)</li>
+            <li>Mengawasi proses pembakaran arang hingga selesai</li>
+            <li>Pengemasan dan pengepulan untuk distribusi lokal</li>
+            <li>Menjaga kualitas produk sesuai standar pembeli</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cook Helper -->
+      <div class="timeline-item mb-10 fade-in-up stagger-2">
+        <div class="card p-6 md:p-8">
+          <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 class="text-xl font-bold text-navy">Koki Asisten</h3>
+              <p class="text-gray-600">Eka Jaya Chinese Food — Sukabumi</p>
+            </div>
+            <span class="badge badge-blue self-start md:self-auto">Sep 2024 - Jan 2025</span>
+          </div>
+          <ul class="list-disc list-inside text-gray-700 space-y-2">
+            <li>Menyiapkan bahan mentah dan bumbu masak</li>
+            <li>Membantu proses memasak berbagai menu</li>
+            <li>Menjaga kebersihan dapur dan peralatan</li>
+            <li>Membantu pelayanan makanan ke pelanggan saat sibuk</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= KEAHLIAN ================= -->
+  <section id="keahlian" class="section-padding bg-[#f8fafc]">
+    <div class="container-custom">
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mb-8 serif">Keahlian & Sertifikasi</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Bahasa Inggris -->
+        <div class="card p-6 fade-in-up stagger-1">
+          <div class="flex items-center gap-3 mb-4">
+            <svg class="w-8 h-8 text-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+            <h3 class="text-lg font-bold text-navy">Bahasa Inggris</h3>
+          </div>
+          <p class="text-sm text-gray-600 mb-3">Membaca, menulis, dan berbicara aktif</p>
+          <div class="skill-bar">
+            <div class="skill-fill orange" style="width: 75%"></div>
+          </div>
+          <p class="text-xs text-right mt-1">75% — cukup aktif</p>
+        </div>
+
+        <!-- Microsoft Office -->
+        <div class="card p-6 fade-in-up stagger-2">
+          <div class="flex items-center gap-3 mb-4">
+            <svg class="w-8 h-8 text-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="text-lg font-bold text-navy">Microsoft Office</h3>
+          </div>
+          <ul class="text-sm text-gray-600 space-y-2">
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/></svg>
+              Excel (Data, Formula)
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/></svg>
+              Word (Dokumen)
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/></svg>
+              PowerPoint (Presentasi)
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/></svg>
+              Outlook (Email)
+            </li>
+          </ul>
+        </div>
+
+        <!-- Editing Video & Foto -->
+        <div class="card p-6 fade-in-up stagger-3">
+          <div class="flex items-center gap-3 mb-4">
+            <svg class="w-8 h-8 text-orange" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <h3 class="text-lg font-bold text-navy">Editing Video & Foto</h3>
+          </div>
+          <p class="text-sm text-gray-600 mb-3">CapCut & Alight Motion</p>
+          <ul class="text-sm text-gray-600 space-y-2">
+            <li>Cut, trim, tambah teks</li>
+            <li>Transisi & efek dasar</li>
+            <li>Color grading & sound</li>
+            <li>Export untuk sosial media</li>
+          </ul>
+        </div>
+
+        <!-- Soft Skills -->
+        <div class="card p-6 fade-in-up stagger-3">
+          <div class="flex items-center gap-3 mb-4">
+            <svg class="w-8 h-8 text-navy" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <h3 class="text-lg font-bold text-navy">Soft Skills</h3>
+          </div>
+          <p class="text-sm text-gray-600 mb-3">Sangat cepat beradaptasi dengan lingkungan baru</p>
+          <ul class="text-sm text-gray-600 space-y-2">
+            <li>Fast learner untuk sistem baru</li>
+            <li>Team player & komunikatif</li>
+            <li>Disiplin & bertanggung jawab</li>
+            <li>Mudah bekerja under pressure</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROJECT ================= -->
+  <section id="project" class="section-padding bg-white">
+    <div class="container-custom">
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mb-8 serif">Project & Kontribusi</h2>
+      
+      <div class="card p-6 md:p-8 fade-in-up">
+        <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-xl font-bold text-navy">Lazir Tools</h3>
+            <p class="text-blue font-medium">Micro-tools gratis untuk siapa saja</p>
+          </div>
+          <span class="badge badge-navy self-start md:self-auto">Next.js 15 + Tailwind</span>
+        </div>
+        <p class="text-gray-600 mb-4">
+          Platform micro-tools yang dibuat untuk solopreneur dan pelaku UMKM — tanpa login, 
+          tanpa iklan, gratis selamanya. Tools yang tersedia: TikTok Downloader, Instagram Downloader.
+        </p>
+        <a href="https://lazir-tools.vercel.app/" target="_blank" rel="noopener noreferrer" 
+           class="inline-flex items-center gap-2 text-blue font-semibold hover:underline">
+          Kunjungi Lazir Tools →
         </a>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ================= KEAHLIAN ================= -->
-    <section id="keahlian" class="scroll-mt-32 mt-16 sm:mt-24">
-      <h2 class="text-4xl sm:text-5xl mb-10 text-[var(--charcoal)]">Keahlian</h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-7">
-        <!-- Card 1 -->
-        <div class="bg-[var(--cream)] sketch-border sketch-shadow sketch-card p-6 sm:p-7">
-          <svg class="w-11 h-11 mb-4 hand-drawn text-[var(--moss)]" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 5h15v10H9.5l-4 4z" />
-            <path d="M8 9h8M8 12h5" />
-          </svg>
-          <h3 class="hand text-2xl sm:text-3xl mb-3 text-[var(--charcoal)]">Bahasa Inggris</h3>
-          <p class="text-lg leading-relaxed text-[var(--burnt)] mb-4">
-            Cukup aktif untuk membaca, menulis, dan berbicara (sekitar 75%).
-          </p>
-          <div class="h-4 sketch-border bg-[var(--paper)] overflow-hidden">
-            <div class="h-full bg-[var(--moss)]" style="width: 75%"></div>
+  <!-- ================= KONTAK ================= -->
+  <section id="kontak" class="section-padding bg-[#f8fafc]">
+    <div class="container-custom">
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mb-8 serif">Hubungi Saya</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Contact Card -->
+        <div class="card p-6 md:p-8 fade-in-up">
+          <h3 class="text-lg font-bold text-navy mb-4">Info Kontak</h3>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue mt-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <div>
+                <p class="text-sm text-gray-500">Email</p>
+                <p class="text-gray-900">rizalafandi24@gmail.com (silakan isi di sini)</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue mt-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <div>
+                <p class="text-sm text-gray-500">Telepon</p>
+                <p class="text-gray-900">[Nomor HP — silakan isi di sini]</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue mt-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <div>
+                <p class="text-sm text-gray-500">Lokasi</p>
+                <p class="text-gray-900">Sukabumi, Jawa Barat, Indonesia</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Card 2 -->
-        <div class="bg-[var(--cream)] sketch-border sketch-shadow sketch-card p-6 sm:p-7">
-          <svg class="w-11 h-11 mb-4 hand-drawn text-[var(--sky)]" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="5" width="16" height="11" rx="2" />
-            <path d="M2 19h20M9.5 16h5" />
-          </svg>
-          <h3 class="hand text-2xl sm:text-3xl mb-3 text-[var(--charcoal)]">Teknologi &amp; Perangkat</h3>
-          <p class="text-lg leading-relaxed text-[var(--burnt)]">
-            Terbiasa mengoperasikan komputer, laptop, serta <em>software</em> perkantoran
-            (Microsoft Excel, Word, PowerPoint, Outlook).
-          </p>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="bg-[var(--cream)] sketch-border sketch-shadow sketch-card p-6 sm:p-7">
-          <svg class="w-11 h-11 mb-4 hand-drawn text-[var(--rust)]" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3l2 5 5 1-4 3 1 5-4-3-4 3 1-5-4-3 5-1z" />
-            <circle cx="19" cy="17" r="2.5" />
-          </svg>
-          <h3 class="hand text-2xl sm:text-3xl mb-3 text-[var(--charcoal)]">Internet &amp; AI</h3>
-          <p class="text-lg leading-relaxed text-[var(--burnt)]">
-            Cukup memahami penggunaan internet dan teknologi AI modern untuk mendukung
-            produktivitas kerja.
-          </p>
+        <!-- Sosmed -->
+        <div class="card p-6 md:p-8 fade-in-up stagger-1">
+          <h3 class="text-lg font-bold text-navy mb-4">Sosial Media</h3>
+          <div class="space-y-4">
+            <a href="https://linkedin.com/in/rizalafandi24" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <svg class="w-6 h-6 text-[#0e76a8]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+              <span class="text-gray-700">linkedin.com/in/rizalafandi24</span>
+            </a>
+            
+            <a href="https://instagram.com/rizalxd69" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <svg class="w-6 h-6 text-[#e4405f]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              <span class="text-gray-700">instagram.com/rizalxd69</span>
+            </a>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ================= FOOTER ================= -->
-    <footer class="mt-20 sm:mt-28 mb-10">
-      <div class="bg-[var(--ink)] text-[var(--cream)] sketch-border sketch-shadow p-8 sm:p-10 text-center">
-        <svg class="w-9 h-9 mx-auto mb-4 hand-drawn" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 9h12v4a4 4 0 01-4 4h-4a4 4 0 01-4-4z" />
-          <path d="M17 10h2a2 2 0 010 4h-2" />
-          <path d="M6 21h10" />
-        </svg>
-        <p class="hand text-2xl sm:text-3xl leading-relaxed mb-2">
-          Dibuat dengan kejujuran, semangat kerja keras,<br>dan sedikit bantuan AI ☕
-        </p>
-        <p class="mt-4 text-lg text-[var(--clay)]">— Rizal Afandi (2005)</p>
+      <!-- CTA -->
+      <div class="mt-8 card p-8 text-center fade-in-up stagger-2">
+        <h3 class="text-2xl font-bold text-navy mb-2">Siap Bergabung?</h3>
+        <p class="text-gray-600 mb-6">Silakan hubungi saya lewat email atau telepon. Saya siap belajar dan berkembang bersama tim Anda.</p>
+        <a href="mailto:rizalafandi24@gmail.com" class="inline-block px-8 py-3 bg-blue text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+          Kirim Email Sekarang
+        </a>
       </div>
-    </footer>
+    </div>
+  </section>
 
-  </main>
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-navy text-white py-8">
+    <div class="container-custom text-center">
+      <p class="text-lg font-medium mb-2">Rizal Afandi — Portfolio</p>
+      <p class="text-gray-400 text-sm">© 2026. Dibuat dengan kejujuran dan semangat belajar.</p>
+      <div class="mt-4 flex justify-center gap-4 text-sm">
+        <a href="#top" class="text-blue hover:text-white transition-colors">Kembali ke Atas</a>
+        <span class="text-gray-500">|</span>
+        <a href="https://github.com/x12zl" target="_blank" rel="noopener noreferrer" class="text-blue hover:text-white transition-colors">GitHub</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    // TV scaling dinamis
-    (function fitTv() {
-      var frames = document.querySelectorAll(".tv-frame");
-      function apply() {
-        frames.forEach(function (frame) {
-          var w = frame.clientWidth;
-          if (!w) return;
-          var scale = w / 1280;
-          frame.style.height = Math.round(800 * scale) + "px";
-          var f = frame.querySelector(".tv-viewport");
-          if (f) f.style.transform = "scale(" + scale + ")";
-        });
-      }
-      window.addEventListener("resize", apply);
-      window.addEventListener("load", apply);
-      if ("ResizeObserver" in window) {
-        new ResizeObserver(apply).observe(document.body);
-      }
-      apply();
-    })();
+    // Mobile nav toggle
+    let mobileNavOpen = false;
+    document.querySelector('button[aria-label="Menu"]').addEventListener('click', () => {
+      mobileNavOpen = !mobileNavOpen;
+      document.querySelector('.nav-links').classList.toggle('open', mobileNavOpen);
+      document.body.style.overflow = mobileNavOpen ? 'hidden' : '';
+    });
   </script>
 </body>
 </html>
